@@ -83,7 +83,7 @@ app.post('/tasks', async (req, res) => {
     // A try catch block used to handle erorrs. The try section is attempted and executed if possible.
     try {
 
-        // 
+        // Creates a result object to be returned by response.
         const result = await pool.query(
 
             // This SQL query inserts a new row into the 'tasks' table and inserts [name] into the (name) column of the table.
@@ -96,7 +96,9 @@ app.post('/tasks', async (req, res) => {
         );
 
         // Respond with the newly created task which is stored as an array and with the first item accessed.
-        res.status(201).json(result.rows[0]);
+        res.status(201).json({
+            message: `Task: '${result.rows[0].name}' added successfully! ID: ${result.rows[0].id}, Status: 'false'`,
+        });
 
         // Catch block that executes if there is an error creating the task.
     } catch (err) {
@@ -109,6 +111,47 @@ app.post('/tasks', async (req, res) => {
     }
 });
 
+
+// Define the DELETE method which searches for a task based on id and then deletes the task from the list.
+// Adds an additionally endpoint which is the id assigned to the task.
+app.delete('/tasks/:id', async (req, res) => {
+
+    // Extracts the id parameter from the URL.
+    const { id } = req.params;
+
+    // A try catch block used to handle erorrs. The try section is attempted and executed if possible.
+    try {
+
+        // 
+        const result = await pool.query(
+
+            // This SQL query deletes a row from the tasks table which has the corresponding id and then returns the deleted row.
+            'DELETE FROM tasks WHERE id = $1 RETURNING *',
+
+            // Value passed from the request body into $1 to set the id of the row to be deleted.
+            [id]
+        );
+
+        // If no task was deleted, respond with 404 Not Found.
+        if (result.rowCount === 0) {
+            return res.status(404).send('Task not found');
+        }
+
+        // Respond with the newly deleted task which is stored as an array and with the first item accessed.
+        res.status(201).json({
+            message: `Task: '${result.rows[0].name}' deleted successfully! ID: ${result.rows[0].id}, Status: 'false'`,
+        });
+
+        // Catch block that executes if there is an error deleting the task.
+    } catch (err) {
+
+        // Produces a console error if the try block fails to deleting the task from the database.
+        console.error('Error creating task:', err);
+
+        // Produces an error on the HTML destination if the try block fails to deleting the task from the database.
+        res.status(500).send('Error creating task');
+    };
+});
 
 
 // Start the server
