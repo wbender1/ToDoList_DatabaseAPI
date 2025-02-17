@@ -73,6 +73,48 @@ app.get('/tasks', async (req, res) => {
 });
 
 
+// Define the GET method which retrieves a specific task based upon id from the database.
+// An asynchronous callback function that handles the GET request since we are using a query from a database.
+app.get('/tasks/:id', async (req, res) => {
+
+    // Extracts the id parameter from the URL.
+    const { id } = req.params;
+
+    // A try catch block used to handle erorrs. The try section is attempted and executed if possible.
+    try {
+
+        // Creates a result object to be returned by response.
+        const result = await pool.query(
+
+            // This SQL query returns a row from the tasks table which has the corresponding id.
+            'SELECT * FROM tasks WHERE id = $1',
+
+            // Value passed from the request body into the placeholder, $1, to set the id of the row to be returned.
+            [id]
+        );
+
+        // If no task was returned, respond with 404 Not Found.
+        if (result.rowCount === 0) {
+            return res.status(404).send('Task not found');
+        }
+
+        // Respond with the newly returned task which is stored as an array and with the first item accessed.
+        res.status(201).json({
+            message: `Task: '${result.rows[0].name}', ID: ${result.rows[0].id}, Status: ${result.rows[0].completed}`,
+        });
+
+        // The catch block is only executed if the try portion fails to execute, produces an error response.
+    } catch (err) {
+
+        // Produces a console error if the try block fails to retrieve the tasks from the database.
+        console.error('Error fetching tasks', err);
+
+        // Produces an error on the HTML destination if the try block fails to retrieve the tasks from the database.
+        res.status(500).send('Error fetching tasks');
+    }
+});
+
+
 // Defines a HTTP POST route for adding new tasks to the database.
 // An asynchronous callback function that handles the POST request since we are using a query from a database.
 app.post('/tasks', async (req, res) => {
