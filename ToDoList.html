@@ -1,0 +1,201 @@
+<!-- Tells the browser that the document type is HTML5 for rendering.-->
+<!DOCTYPE html>
+
+<!--Specifies that the language in the HTML document is in English.-->
+<html lang="en">
+
+<!--A container for metadata such as character encoding, the title, and links to external resources like stylesheets or scripts.-->
+<head>
+
+    <!--Specifies that the character encoding used in UTF-8-->
+    <meta charset="UTF-8">
+
+    <!--Used for resposiveness design. Indicates the viewports width to be the device/screen width and has initial zoom/scale to 1.0.-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--Sets the title of the webpage where the tab or window displays.-->
+    <title>To-Do List API</title>
+</head>
+
+<!--Page content which contains buttons and script.-->
+<body>
+
+    <!-- A heading element, h1 is the highest level reading-->
+    <h1>To-Do List API</h1>
+
+    <!--A button which performs the getTasks function when clicked and has a text, Get Tasks on the button-->
+    <button onclick="getTasks()">Get Tasks</button>
+
+    <!--A button which performs the getTaskById function when clicked and has a text, Get Task by ID on the button-->
+    <button onclick="getTaskById()">Get Task by ID</button>
+
+    <!--A button which performs the addTask function when clicked and has a text, Add Task on the button-->
+    <button onclick="addTask()">Add Task</button>
+
+    <!--A button which performs the updateTask function when clicked and has a text, Update Task on the button-->
+    <button onclick="updateTask()">Update Task</button>
+
+    <!--A button which performs the deleteTask function when clicked and has a text, Delete Task on the button-->
+    <button onclick="deleteTask()">Delete Task</button>
+
+    <!--a preformed text element that will display text exactly as written. In this case, it tells the functions that 'output'
+        is the indentifier to format and use when inserting the JSON output into a pre element for output.-->
+    <pre id="output"></pre>
+
+
+    <script>
+        // Create a constant variable to hold the API URL for tasks.
+        const apiUrl = 'http://localhost:3000/tasks';
+
+        // Function to run when getTasks button is pressed.
+        async function getTasks() {
+
+            // Fetch defaults to GET method using the previously set apiUrl and sets 'response' with the response from API.
+            const response = await fetch(apiUrl);
+
+            // Extracts the JSON from the response and assigns it to data.
+            const data = await response.json();
+
+            // stringify converts 'data' into a formatted JSON string. 'null' is unused. '2' specifies that each row of JSON is indented with 2 spaces.
+            // Searches 'document' for the pre element with id 'output'. Sets the text inside to the converted JSON.
+            // Modifying the content of the 'output' pre element automatically displays the contents to the website when finished.
+            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+        }
+
+        // Function to run when getTaskById button is pressed.
+        async function getTaskById() {
+
+            // Opens a pop-up and prompts user to input a task ID to search for and sets that string as 'id'.
+            const id = prompt('Enter task ID:');
+
+            // Ends function and returns nothing if 'id' is not defined or not input by user.
+            if (!id) return;
+
+            // Inserts apiUrl and id into placeholders and tries to fetch a response from the API. Fetch defaults to GET method by default.
+            // It sends the URL request to fulfill whatever get request uses that URL format and returns the error and JSON if found.
+            const response = await fetch(`${apiUrl}/${id}`);
+
+            // Checks the response status or error code. If status is 200-299, returns true. If 404 or 500 error, returns false.
+            if (response.ok) {
+
+                // Extracts the JSON from the response and assigns it to data.
+                const data = await response.json();
+
+                // stringify converts 'data' into a formatted JSON string. 'null' is unused. '2' specifies that each row of JSON is indented with 2 spaces.
+                // Searches 'document' for the pre element with id 'output'. Sets the text inside to the converted JSON.
+                // Modifying the content of the 'output' pre element automatically displays the contents to the website when finished.
+                document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+            } else {
+
+                // If 'response' contains a 404 or 500 error code, set the text output to 'Task not found'.
+                // Modifying the content of the 'output' pre element automatically displays the contents to the website when finished.
+                document.getElementById('output').textContent = 'Task not found';
+            }
+        }
+
+        // Function to run when addTask button is pressed.
+        async function addTask() {
+
+            // Opens a pop-up and prompts user to input a task name and sets that string as 'name'.
+            const name = prompt('Enter task name:');
+
+            // Ends function and returns nothing if no input is given or if input is cancelled.
+            if (!name) return;
+
+            // Sends a POST request using the previously set apiUrl and sets 'response' with the response from API.
+            const response = await fetch(apiUrl, {
+
+                // The method and headers are defined as necessary when submitting a request for a POST method.
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+
+                // The input name is wrapped to produce { name: "Task Name" },
+                // then added to the JavaScript object 'body' as a JSON string which looks like this, { "name": "Task 1" }.
+                body: JSON.stringify({ name })
+            });
+
+            // Extracts the JSON from the response and assigns it to data.
+            const data = await response.json();
+
+            // stringify converts 'data' into a formatted JSON string. 'null' is unused. '2' specifies that each row of JSON is indented with 2 spaces.
+            // Searches 'document' for the pre element with id 'output'. Sets the text inside to the converted JSON.
+            // Modifying the content of the 'output' pre element automatically displays the contents to the website when finished.
+            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+        }
+
+        // Function to run when updateTask button is pressed.
+        async function updateTask() {
+
+            // Opens a pop-up and prompts user to input a task id and sets that string as 'id'.
+            const id = prompt('Enter task ID to update:');
+
+            // Opens a pop-up and prompts user to input a task name and sets that string as 'name'.
+            const name = prompt('Enter new task name (or leave blank):');
+
+            // Opens a pop-up and prompts user to confirm task completed status. Clicking 'OK' sets it to true and clicking 'cancel' sets to false.
+            // Completed will always contain a Boolean true or false.
+            const completed = confirm('Mark task as completed?');
+
+            // Creates an empty JavaScript object for storing the body of the request.
+            const body = {};
+
+            // Checks to see if name is defined/input from prompt. If a name is given, a name property is added to the body.
+            // If no name was given to be updated, the request will simply send the body without a name and the API handles the rest.
+            if (name) body.name = name;
+
+            // Sets the completed property of body with the Boolean true or false.
+            body.completed = completed;
+
+            // Inserts apiUrl and id into placeholders, sends a PUT request, and sets 'response' with the response from API.
+            const response = await fetch(`${apiUrl}/${id}`, {
+
+                // The method and headers are defined as necessary when submitting a request for a PUT method.
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+
+                // The body is set to the JavaScript object 'body'. It is then added as a JSON string.
+                body: JSON.stringify(body)
+            });
+
+            // Extracts the JSON from the response and assigns it to data.
+            const data = await response.json();
+
+            // stringify converts 'data' into a formatted JSON string. 'null' is unused. '2' specifies that each row of JSON is indented with 2 spaces.
+            // Searches 'document' for the pre element with id 'output'. Sets the text inside to the converted JSON.
+            // Modifying the content of the 'output' pre element automatically displays the contents to the website when finished.
+            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+        }
+
+        // Function to run when deleteTask button is pressed.
+        async function deleteTask() {
+
+            // Opens a pop-up and prompts user to input a task id and sets that string as 'id'.
+            const id = prompt('Enter task ID to delete:');
+
+            // Ends function and returns nothing if 'id' is not defined or not input by user.
+            if (!id) return;
+
+            // Inserts apiUrl and id into placeholders, sends a DELETE request, and sets 'response' with the response from API.
+            // The method is defined as necessary when submitting a request for a DELETE method.
+            const response = await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+
+            // Checks the response status or error code. If status is 200-299, returns true. If 404 or 500 error, returns false.
+            if (response.ok) {
+
+                // Extracts the JSON from the response and assigns it to data.
+                const data = await response.json();
+
+                // stringify converts 'data' into a formatted JSON string. 'null' is unused. '2' specifies that each row of JSON is indented with 2 spaces.
+                // Searches 'document' for the pre element with id 'output'. Sets the text inside to the converted JSON.
+                // Modifying the content of the 'output' pre element automatically displays the contents to the website when finished.
+                document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+            } else {
+
+                // If 'response' contains a 404 or 500 error code, set the text output to 'Task not found'.
+                // Modifying the content of the 'output' pre element automatically displays the contents to the website when finished.
+                document.getElementById('output').textContent = 'Task not found';
+            }
+        }
+    </script>
+</body>
+    </html>
