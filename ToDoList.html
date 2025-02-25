@@ -107,6 +107,12 @@
         // Function to run when getTaskById button is pressed.
         async function getTaskById() {
 
+            // Searches 'document' for the element with id 'taskTable' and sets it to a constant variable 'tableBody'.
+            const tableBody = document.getElementById('taskTable');
+
+            // Clear existing rows from the table.
+            tableBody.innerHTML = '';
+
             // Opens a pop-up and prompts user to input a task ID to search for and sets that string as 'id'.
             const id = prompt('Enter task ID:');
 
@@ -116,12 +122,6 @@
             // Inserts apiUrl and id into placeholders and tries to fetch a response from the API. Fetch defaults to GET method by default.
             // It sends the URL request to fulfill whatever get request uses that URL format and returns the error and JSON if found.
             const response = await fetch(`${apiUrl}/${id}`);
-
-            // Searches 'document' for the element with id 'taskTable' and sets it to a constant variable 'tableBody'.
-            const tableBody = document.getElementById('taskTable');
-
-            // Clear existing rows from the table.
-            tableBody.innerHTML = '';
 
             // Checks the response status or error code. If status is 200-299, returns true. If 404 or 500 error, returns false.
             if (response.ok) {
@@ -162,6 +162,12 @@
         // Function to run when addTask button is pressed.
         async function addTask() {
 
+            // Searches 'document' for the element with id 'taskTable' and sets it to a constant variable 'tableBody'.
+            const tableBody = document.getElementById('taskTable');
+
+            // Clear existing rows from the table.
+            tableBody.innerHTML = '';
+
             // Opens a pop-up and prompts user to input a task name and sets that string as 'name'.
             const name = prompt('Enter task name:');
 
@@ -182,12 +188,6 @@
 
             // Extracts the JSON from the response and assigns it to data.
             const data = await response.json();
-
-            // Searches 'document' for the element with id 'taskTable' and sets it to a constant variable 'tableBody'.
-            const tableBody = document.getElementById('taskTable');
-
-            // Clear existing rows from the table.
-            tableBody.innerHTML = '';
 
             // Message above task that is added.
             document.getElementById('output').textContent = 'Task below was added to the list:';
@@ -220,76 +220,95 @@
         // Function to run when updateTask button is pressed.
         async function updateTask() {
 
-            // Opens a pop-up and prompts user to input a task id and sets that string as 'id'.
-            const id = prompt('Enter task ID to update:');
-
-            // Opens a pop-up and prompts user to input a task name and sets that string as 'name'.
-            const name = prompt('Enter new task name (or leave blank):');
-
-            // Opens a pop-up and prompts user to confirm task completed status. Clicking 'OK' sets it to true and clicking 'cancel' sets to false.
-            // Completed will always contain a Boolean true or false.
-            const completed = confirm('Mark task as completed?');
-
-            // Creates an empty JavaScript object for storing the body of the request.
-            const body = {};
-
-            // Checks to see if name is defined/input from prompt. If a name is given, a name property is added to the body.
-            // If no name was given to be updated, the request will simply send the body without a name and the API handles the rest.
-            if (name) body.name = name;
-
-            // Sets the completed property of body with the Boolean true or false.
-            body.completed = completed;
-
-            // Inserts apiUrl and id into placeholders, sends a PUT request, and sets 'response' with the response from API.
-            const response = await fetch(`${apiUrl}/${id}`, {
-
-                // The method and headers are defined as necessary when submitting a request for a PUT method.
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-
-                // The body is set to the JavaScript object 'body'. It is then added as a JSON string.
-                body: JSON.stringify(body)
-            });
-
-            // Extracts the JSON from the response and assigns it to data.
-            const data = await response.json();
-
             // Searches 'document' for the element with id 'taskTable' and sets it to a constant variable 'tableBody'.
             const tableBody = document.getElementById('taskTable');
 
             // Clear existing rows from the table.
             tableBody.innerHTML = '';
 
-            // Message above task that is updated.
-            document.getElementById('output').textContent = 'Task below was updated:';
+            // Opens a pop-up and prompts user to input a task id and sets that string as 'id'.
+            const id = prompt('Enter task ID to update:');
 
-            // Create column header row
-            const colHeaders = document.createElement('tr');
+            // Ends function and returns nothing if 'id' is not input by user.
+            if (!id) return;
 
-            // Add column headers to the column header row.
-            colHeaders.innerHTML = `
-            <th>Name</th>
-            <th>ID</th>
-            <th>Completed</th>`;
+            // Inserts apiUrl and id into placeholders and tries to fetch a response from the API. Fetch defaults to GET method by default.
+            // It sends the URL request to fulfill whatever get request uses that URL format and returns the error and JSON if found.
+            const checkID = await fetch(`${apiUrl}/${id}`);
 
-            // Add column header row to the table
-            tableBody.appendChild(colHeaders);
+            if (checkID.ok) {
+                // Opens a pop-up and prompts user to input a task name and sets that string as 'name'.
+                const name = prompt('Enter new task name (or leave blank):');
 
-            // Create a new row element.
-            const row = document.createElement('tr');
+                // Opens a pop-up and prompts user to confirm task completed status. Clicking 'OK' sets it to true and clicking 'cancel' sets to false.
+                // Completed will always contain a Boolean true or false.
+                const completed = confirm('Mark task as completed?');
 
-            // Add a cell to the row for task name, id, and completed status.
-            row.innerHTML = `
-            <td>${data.name}</td>
-            <td>${data.id}</td>
-            <td>${data.completed ? '✅' : '❌'}</td>`;
+                // Creates an empty JavaScript object for storing the body of the request.
+                const body = {};
 
-            // Append the row to the 'tableBody' element.
-            tableBody.appendChild(row);
+                // Checks to see if name is defined/input from prompt. If a name is given, a name property is added to the body.
+                // If no name was given to be updated, the request will simply send the body without a name and the API handles the rest.
+                if (name) body.name = name;
+
+                // Sets the completed property of body with the Boolean true or false.
+                body.completed = completed;
+
+                // Inserts apiUrl and id into placeholders, sends a PUT request, and sets 'response' with the response from API.
+                const response = await fetch(`${apiUrl}/${id}`, {
+
+                    // The method and headers are defined as necessary when submitting a request for a PUT method.
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+
+                    // The body is set to the JavaScript object 'body'. It is then added as a JSON string.
+                    body: JSON.stringify(body)
+                });
+
+                // Extracts the JSON from the response and assigns it to data.
+                const data = await response.json();
+
+                // Message above task that is updated.
+                document.getElementById('output').textContent = 'Task below was updated:';
+
+                // Create column header row
+                const colHeaders = document.createElement('tr');
+
+                // Add column headers to the column header row.
+                colHeaders.innerHTML = `
+                <th>Name</th>
+                <th>ID</th>
+                <th>Completed</th>`;
+
+                // Add column header row to the table
+                tableBody.appendChild(colHeaders);
+
+                // Create a new row element.
+                const row = document.createElement('tr');
+
+                // Add a cell to the row for task name, id, and completed status.
+                row.innerHTML = `
+                <td>${data.name}</td>
+                <td>${data.id}</td>
+                <td>${data.completed ? '✅' : '❌'}</td>`;
+
+                // Append the row to the 'tableBody' element.
+                tableBody.appendChild(row);
+            } else {
+
+                // Message that the task could not be found.
+                document.getElementById('output').textContent = `Task with requested ID: '${id}' not found.`;
+            }
         }
 
         // Function to run when deleteTask button is pressed.
         async function deleteTask() {
+
+            // Searches 'document' for the element with id 'taskTable' and sets it to a constant variable 'tableBody'.
+            const tableBody = document.getElementById('taskTable');
+
+            // Clear existing rows from the table.
+            tableBody.innerHTML = '';
 
             // Opens a pop-up and prompts user to input a task id and sets that string as 'id'.
             const id = prompt('Enter task ID to delete:');
@@ -300,12 +319,6 @@
             // Inserts apiUrl and id into placeholders, sends a DELETE request, and sets 'response' with the response from API.
             // The method is defined as necessary when submitting a request for a DELETE method.
             const response = await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
-
-            // Searches 'document' for the element with id 'taskTable' and sets it to a constant variable 'tableBody'.
-            const tableBody = document.getElementById('taskTable');
-
-            // Clear existing rows from the table.
-            tableBody.innerHTML = '';
 
             // Checks the response status or error code. If status is 200-299, returns true. If 404 or 500 error, returns false.
             if (response.ok) {
