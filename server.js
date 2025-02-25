@@ -105,9 +105,7 @@ app.get('/tasks/:id', async (req, res) => {
         }
 
         // Respond with the newly returned task which is stored as an array and with the first item accessed.
-        res.status(201).json({
-            message: `Task: '${result.rows[0].name}', ID: ${result.rows[0].id}, Status: ${result.rows[0].completed}`,
-        });
+        res.status(201).json(result.rows[0]);
 
         // The catch block is only executed if the try portion fails to execute, produces an error response.
     } catch (err) {
@@ -116,7 +114,7 @@ app.get('/tasks/:id', async (req, res) => {
         console.error('Error fetching tasks', err);
 
         // Produces an error on the HTML destination if the try block fails to retrieve the tasks from the database.
-        res.status(500).send('Error fetching tasks');
+        res.status(500);
     }
 });
 
@@ -144,9 +142,7 @@ app.post('/tasks', async (req, res) => {
         );
 
         // Respond with the newly created task which is stored as an array and with the first item accessed.
-        res.status(201).json({
-            message: `Task: '${result.rows[0].name}' added successfully! ID: ${result.rows[0].id}, Status: 'false'`,
-        });
+        res.status(201).json(result.rows[0]);
 
         // Catch block that executes if there is an error creating the task.
     } catch (err) {
@@ -155,7 +151,7 @@ app.post('/tasks', async (req, res) => {
         console.error('Error creating task:', err);
 
         // Produces an error on the HTML destination if the try block fails to retrieve the tasks from the database.
-        res.status(500).send('Error creating task');
+        res.status(500);
     }
 });
 
@@ -239,9 +235,7 @@ app.put('/tasks/:id', async (req, res) => {
         }
 
         // Respond with the newly updated task which is stored as an array and with the first item accessed.
-        res.status(201).json({
-            message: `Task: '${result.rows[0].name}' updated successfully! ID: ${result.rows[0].id}, Status: ${result.rows[0].completed}`,
-        });
+        res.status(201).json(result.rows[0]);
 
         // Catch block that executes if there is an error updating the task.
     } catch (err) {
@@ -250,7 +244,7 @@ app.put('/tasks/:id', async (req, res) => {
         console.error('Error updating task', err);
 
         // Produces an error on the HTML destination if the try block fails to update the task from the database.
-        res.status(500).send('Error updating task');
+        res.status(500);
     };
 });
 
@@ -281,9 +275,7 @@ app.delete('/tasks/:id', async (req, res) => {
         }
 
         // Respond with the newly deleted task which is stored as an array and with the first item accessed.
-        res.status(201).json({
-            message: `Task: '${result.rows[0].name}' deleted successfully! ID: ${result.rows[0].id}, Status: ${result.rows[0].completed}`,
-        });
+        res.status(201).json(result.rows[0]);
 
         // Catch block that executes if there is an error deleting the task.
     } catch (err) {
@@ -292,7 +284,7 @@ app.delete('/tasks/:id', async (req, res) => {
         console.error('Error deleting task', err);
 
         // Produces an error on the HTML destination if the try block fails to delete the task from the database.
-        res.status(500).send('Error deleting task');
+        res.status(500);
     };
 });
 

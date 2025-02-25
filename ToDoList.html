@@ -42,6 +42,19 @@
         is the indentifier to format and use when inserting the JSON output into a pre element for output.-->
     <pre id="output"></pre>
 
+    <!-- A table to display the task information -->
+    <table id="taskTable">
+        <!--Declare the column headers for the table-->
+        <thead>
+            <tr>
+             <!-- Table column headers will be added here dynamically -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table rows will be added here dynamically -->
+        </tbody>
+    </table>
+
 
     <script>
         // Create a constant variable to hold the API URL for tasks.
@@ -56,10 +69,39 @@
             // Extracts the JSON from the response and assigns it to data.
             const data = await response.json();
 
-            // stringify converts 'data' into a formatted JSON string. 'null' is unused. '2' specifies that each row of JSON is indented with 2 spaces.
-            // Searches 'document' for the pre element with id 'output'. Sets the text inside to the converted JSON.
-            // Modifying the content of the 'output' pre element automatically displays the contents to the website when finished.
-            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+            // Searches 'document' for the element with id 'taskTable' and sets it to a constant variable 'tableBody'.
+            const tableBody = document.getElementById('taskTable');
+
+            // Clear existing rows from the table.
+            tableBody.innerHTML = '';
+
+            // Create column header row
+            const colHeaders = document.createElement('tr');
+
+            // Add column headers to the column header row.
+            colHeaders.innerHTML = `
+             <th>Name</th>
+             <th>ID</th>
+             <th>Completed</th>`;
+
+            // Add column header row to the table
+            tableBody.appendChild(colHeaders);
+
+            // For each 'task' in 'data'.
+            data.forEach(task => {
+
+                // Create a new row element.
+                const row = document.createElement('tr');
+
+                // Add a cell to the row for task name, id, and completed status.
+                row.innerHTML = `
+                <td>${task.name}</td>
+                <td>${task.id}</td>
+                <td>${task.completed ? '✅' : '❌'}</td>`;
+
+                // Append the row to the 'tableBody' element.
+                tableBody.appendChild(row);
+            });
         }
 
         // Function to run when getTaskById button is pressed.
@@ -68,12 +110,18 @@
             // Opens a pop-up and prompts user to input a task ID to search for and sets that string as 'id'.
             const id = prompt('Enter task ID:');
 
-            // Ends function and returns nothing if 'id' is not defined or not input by user.
+            // Ends function and returns nothing if 'id' is not input by user.
             if (!id) return;
 
             // Inserts apiUrl and id into placeholders and tries to fetch a response from the API. Fetch defaults to GET method by default.
             // It sends the URL request to fulfill whatever get request uses that URL format and returns the error and JSON if found.
             const response = await fetch(`${apiUrl}/${id}`);
+
+            // Searches 'document' for the element with id 'taskTable' and sets it to a constant variable 'tableBody'.
+            const tableBody = document.getElementById('taskTable');
+
+            // Clear existing rows from the table.
+            tableBody.innerHTML = '';
 
             // Checks the response status or error code. If status is 200-299, returns true. If 404 or 500 error, returns false.
             if (response.ok) {
@@ -81,15 +129,33 @@
                 // Extracts the JSON from the response and assigns it to data.
                 const data = await response.json();
 
-                // stringify converts 'data' into a formatted JSON string. 'null' is unused. '2' specifies that each row of JSON is indented with 2 spaces.
-                // Searches 'document' for the pre element with id 'output'. Sets the text inside to the converted JSON.
-                // Modifying the content of the 'output' pre element automatically displays the contents to the website when finished.
-                document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+                // Create column header row
+                const colHeaders = document.createElement('tr');
+
+                // Add column headers to the column header row.
+                colHeaders.innerHTML = `
+                <th>Name</th>
+                <th>ID</th>
+                <th>Completed</th>`;
+
+                // Add column header row to the table
+                tableBody.appendChild(colHeaders);
+
+                // Create a new row element.
+                const row = document.createElement('tr');
+
+                // Add a cell to the row for task name, id, and completed status.
+                row.innerHTML = `
+                <td>${data.name}</td>
+                <td>${data.id}</td>
+                <td>${data.completed ? '✅' : '❌'}</td>`;
+
+                // Append the row to the 'tableBody' element.
+                tableBody.appendChild(row);
             } else {
 
-                // If 'response' contains a 404 or 500 error code, set the text output to 'Task not found'.
-                // Modifying the content of the 'output' pre element automatically displays the contents to the website when finished.
-                document.getElementById('output').textContent = 'Task not found';
+                // Message that the task could not be found.
+                document.getElementById('output').textContent = `Task with requested ID: '${id}' not found.`;
             }
         }
 
@@ -117,10 +183,38 @@
             // Extracts the JSON from the response and assigns it to data.
             const data = await response.json();
 
-            // stringify converts 'data' into a formatted JSON string. 'null' is unused. '2' specifies that each row of JSON is indented with 2 spaces.
-            // Searches 'document' for the pre element with id 'output'. Sets the text inside to the converted JSON.
-            // Modifying the content of the 'output' pre element automatically displays the contents to the website when finished.
-            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+            // Searches 'document' for the element with id 'taskTable' and sets it to a constant variable 'tableBody'.
+            const tableBody = document.getElementById('taskTable');
+
+            // Clear existing rows from the table.
+            tableBody.innerHTML = '';
+
+            // Message above task that is added.
+            document.getElementById('output').textContent = 'Task below was added to the list:';
+
+            // Create column header row
+            const colHeaders = document.createElement('tr');
+
+            // Add column headers to the column header row.
+            colHeaders.innerHTML = `
+            <th>Name</th>
+            <th>ID</th>
+            <th>Completed</th>`;
+
+            // Add column header row to the table
+            tableBody.appendChild(colHeaders);
+
+            // Create a new row element.
+            const row = document.createElement('tr');
+
+            // Add a cell to the row for task name, id, and completed status.
+            row.innerHTML = `
+            <td>${data.name}</td>
+            <td>${data.id}</td>
+            <td>${data.completed ? '✅' : '❌'}</td>`;
+
+            // Append the row to the 'tableBody' element.
+            tableBody.appendChild(row);
         }
 
         // Function to run when updateTask button is pressed.
@@ -160,10 +254,38 @@
             // Extracts the JSON from the response and assigns it to data.
             const data = await response.json();
 
-            // stringify converts 'data' into a formatted JSON string. 'null' is unused. '2' specifies that each row of JSON is indented with 2 spaces.
-            // Searches 'document' for the pre element with id 'output'. Sets the text inside to the converted JSON.
-            // Modifying the content of the 'output' pre element automatically displays the contents to the website when finished.
-            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+            // Searches 'document' for the element with id 'taskTable' and sets it to a constant variable 'tableBody'.
+            const tableBody = document.getElementById('taskTable');
+
+            // Clear existing rows from the table.
+            tableBody.innerHTML = '';
+
+            // Message above task that is updated.
+            document.getElementById('output').textContent = 'Task below was updated:';
+
+            // Create column header row
+            const colHeaders = document.createElement('tr');
+
+            // Add column headers to the column header row.
+            colHeaders.innerHTML = `
+            <th>Name</th>
+            <th>ID</th>
+            <th>Completed</th>`;
+
+            // Add column header row to the table
+            tableBody.appendChild(colHeaders);
+
+            // Create a new row element.
+            const row = document.createElement('tr');
+
+            // Add a cell to the row for task name, id, and completed status.
+            row.innerHTML = `
+            <td>${data.name}</td>
+            <td>${data.id}</td>
+            <td>${data.completed ? '✅' : '❌'}</td>`;
+
+            // Append the row to the 'tableBody' element.
+            tableBody.appendChild(row);
         }
 
         // Function to run when deleteTask button is pressed.
@@ -179,21 +301,48 @@
             // The method is defined as necessary when submitting a request for a DELETE method.
             const response = await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
 
+            // Searches 'document' for the element with id 'taskTable' and sets it to a constant variable 'tableBody'.
+            const tableBody = document.getElementById('taskTable');
+
+            // Clear existing rows from the table.
+            tableBody.innerHTML = '';
+
             // Checks the response status or error code. If status is 200-299, returns true. If 404 or 500 error, returns false.
             if (response.ok) {
 
                 // Extracts the JSON from the response and assigns it to data.
                 const data = await response.json();
 
-                // stringify converts 'data' into a formatted JSON string. 'null' is unused. '2' specifies that each row of JSON is indented with 2 spaces.
-                // Searches 'document' for the pre element with id 'output'. Sets the text inside to the converted JSON.
-                // Modifying the content of the 'output' pre element automatically displays the contents to the website when finished.
-                document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+                // Message above task that is deleted.
+                document.getElementById('output').textContent = 'Task below was deleted from the list:';
+
+                // Create column header row
+                const colHeaders = document.createElement('tr');
+
+                // Add column headers to the column header row.
+                colHeaders.innerHTML = `
+                <th>Name</th>
+                <th>ID</th>
+                <th>Completed</th>`;
+
+                // Add column header row to the table
+                tableBody.appendChild(colHeaders);
+
+                // Create a new row element.
+                const row = document.createElement('tr');
+
+                // Add a cell to the row for task name, id, and completed status.
+                row.innerHTML = `
+                <td>${data.name}</td>
+                <td>${data.id}</td>
+                <td>${data.completed ? '✅' : '❌'}</td>`;
+
+                // Append the row to the 'tableBody' element.
+                tableBody.appendChild(row);
             } else {
 
-                // If 'response' contains a 404 or 500 error code, set the text output to 'Task not found'.
-                // Modifying the content of the 'output' pre element automatically displays the contents to the website when finished.
-                document.getElementById('output').textContent = 'Task not found';
+                // Message that the task could not be found.
+                document.getElementById('output').textContent = `Task with requested ID: ${id} not found, no task deleted.`;
             }
         }
     </script>
