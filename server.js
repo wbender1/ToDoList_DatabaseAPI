@@ -29,9 +29,9 @@ const pool = new Pool({
     // Define the database server location. localhost signals the same machine as the application.
     host: 'localhost',
     // Specifies the name of the PostgreSQL database to connect to.
-    database: 'todolist_api',
+    database: 'INSERT_DATABASE',
     // Specifies the password for PostgreSQL user.
-    password: 'Toastretrieve24$',
+    password: 'INSERT_PASSWORD',
     // Default port used by PostgreSQL connections.
     port: 5432,
 });
