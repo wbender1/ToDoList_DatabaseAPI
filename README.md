@@ -1,7 +1,8 @@
 # 📝 ToDoList_DatabaseAPI
 
-![JavaScript]
-![Express]
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow)
+![Node.js](https://img.shields.io/badge/Node.js-18.x-green)
+![Express](https://img.shields.io/badge/Express-4.x-lightgrey)
 ![GitHub](https://img.shields.io/badge/license-MIT-green)
 
 A basic To-Do List API that uses PostgreSQL for storage.
