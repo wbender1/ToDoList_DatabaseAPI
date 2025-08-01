@@ -44,12 +44,15 @@ npm install cors
 Download and place both `server.js` and `ToDoList.html` inside project directory  
 Replace PostgreSQL server connection information in `server.js`
 
-# 6. Launch Node.js/Express Server  
+# 6. Launch Node.js/Express Server
 IDE (Visual Studio)  
 - run `server.js`  
 
 Command Line  
 - node `server.js`  
+
+# 7. Access Application via Web Browser
+Open `ToDoList.html` file  
 
 ## 🛠️ Usage Guide
 
