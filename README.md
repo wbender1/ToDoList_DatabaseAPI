@@ -18,7 +18,7 @@ A basic To-Do List API that uses PostgreSQL for storage.
 - `ToDoList.html` - HTML template with button functionality
 
 ## 🚀 Quick Start
-1. Install PostgreSQL
+## 1. Install PostgreSQL
 https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
 
 # 2. Set up Database using PostgreSQL
