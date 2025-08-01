@@ -22,16 +22,16 @@ A basic To-Do List API that uses PostgreSQL for storage.
 https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
 
 # 2. Set up Database using PostgreSQL
-psql -U postgres
-CREATE DATABASE todolist_api;
-\c todolist_api
-todolist_api=# CREATE TABLE tasks (
-todolist_api(# title VARCHAR(255) NOT NULL,
-todolist_api(# description TEXT,
-todolist_api(# id SERIAL PRIMARY KEY,
-todolist_api(# completed BOOLEAN DEFAULT FALSE
-todolist_api(# );
-CREATE TABLE
+psql -U postgres  
+CREATE DATABASE todolist_api;  
+\c todolist_api  
+todolist_api=# CREATE TABLE tasks (  
+todolist_api(# title VARCHAR(255) NOT NULL,  
+todolist_api(# description TEXT,  
+todolist_api(# id SERIAL PRIMARY KEY,  
+todolist_api(# completed BOOLEAN DEFAULT FALSE  
+todolist_api(# );  
+CREATE TABLE  
 
 # 3. Initialize Project in Project Directory
 npm init -y
@@ -41,7 +41,7 @@ npm install express
 npm install cors
 
 # 5. Download Code
-Download and place both `server.js` and `ToDoList.html` inside project directory
+Download and place both `server.js` and `ToDoList.html` inside project directory  
 Replace PostgreSQL server connection information in `server.js`
 
 # 6. Initialize Server and Access HTML File
