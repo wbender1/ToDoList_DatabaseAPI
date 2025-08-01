@@ -47,6 +47,7 @@ Replace PostgreSQL server connection information in `server.js`
 # 6. Launch Node.js/Express Server  
 IDE (Visual Studio)  
 - run `server.js`  
+
 Command Line  
 - node `server.js`  
 
